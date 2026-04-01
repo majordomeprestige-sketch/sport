@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>BUARD ÉLITE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--g:#00e676;--bg:#080808;--bg2:#141414;--bg3:#1e1e1e;--border:#2a2a2a;--txt:#f0f0f0;--txt2:#c0c0c0;--dim:#888;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+.page{display:none;padding:0 0 30px;animation:fu .2s ease}
+.page.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* NAV */
+.navbar{width:calc(100% - 32px);max-width:398px;background:var(--bg2);border:1px solid var(--g);border-radius:var(--r);display:flex;margin:12px 16px 0}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 0;cursor:pointer;color:#fff !important;transition:.15s;font-size:10px;font-weight:600;letter-spacing:.5px;gap:3px}
+.nb.on{color:#fff !important}
+.nb svg{width:20px;height:20px;stroke-width:2;stroke:var(--g)}.nb svg{width:20px;height:20px;stroke-width:2}
+/* HEADER */
+.hdr{padding:22px 16px 0}
+.hlbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--g);letter-spacing:3px;margin-bottom:3px}
+.htitle{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:1px;line-height:1;color:#fff}
+.hsub{color:var(--dim);font-size:12px;margin-top:4px}
+.slbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--g);letter-spacing:3px;padding:16px 16px 8px;display:block}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin:0 16px}
+/* WEEK STRIP */
+.wstrip{display:flex;gap:6px;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.wstrip::-webkit-scrollbar{display:none}
+.wday{flex-shrink:0;width:52px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:8px 3px 10px;text-align:center;cursor:pointer;transition:.15s}
+.wday:active{transform:scale(.93)}
+.wday.today{border-color:var(--g);background:rgba(0,230,118,.07)}
+.wday.rest{cursor:default;opacity:.4}
+/* SESSION CARDS */
+.sc{background:var(--bg2);border:1px solid var(--g);border-radius:var(--r);margin:6px 16px 0;cursor:pointer;transition:.15s;overflow:hidden}
+.sc:active{transform:scale(.985);border-color:rgba(0,230,118,.25)}
+.sc-in{padding:13px 16px;display:flex;align-items:center;gap:12px}
+/* SESSION HEADER */
+.sess-hdr{padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;background:rgba(8,8,8,.97);z-index:9;border-top:2px solid var(--g);border-bottom:none;backdrop-filter:blur(16px)}
+.btn-back{background:var(--bg2);border:1px solid var(--border);color:var(--txt);border-radius:9px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif}
+/* ACCORDION */
+.ac{background:var(--bg2);border:1px solid var(--g);border-radius:var(--r);margin:6px 16px 0;overflow:hidden}
+.ac-h{padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.ac-h .ac-title{font-weight:700;font-size:14px;color:var(--txt);display:flex;align-items:center;gap:8px}
+.ac-bd{display:none;border-top:1px solid var(--border);padding:12px 16px}
+.ac-bd.on{display:block}
+/* EXERCICE */
+.exo{background:var(--bg2);border:1px solid var(--g);border-radius:var(--r);margin:6px 16px 0;overflow:hidden;transition:border-color .15s}
+.exo.open{border-color:rgba(0,230,118,.3)}
+.exo-h{padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.exo-bd{display:none;border-top:1px solid var(--border);padding:14px 16px}
+.exo-bd.on{display:block}
+.exo-name{font-weight:700;font-size:14px;color:var(--txt);line-height:1.3;flex:1}
+.exo-name.spec{color:#fff}
+.tag{font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:5px;font-weight:500}
+.tg{background:rgba(0,230,118,.08);color:#fff;border:1px solid var(--g)}
+.tt{background:rgba(0,230,118,.07);color:#5dde9e}
+.tr{background:var(--bg3);color:var(--dim)}
+/* TIP */
+.tip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;font-size:12px;color:#fff;line-height:1.7;margin-bottom:12px;display:none}
+.tip.on{display:block}
+.tip-btn{background:transparent;border:1px solid var(--g);color:var(--g);border-radius:8px;padding:5px 12px;font-size:11px;cursor:pointer;font-weight:600;margin-bottom:12px;font-family:'DM Sans',sans-serif}
+/* SETS */
+.sh{display:grid;grid-template-columns:28px 1fr 1fr;gap:5px;margin-bottom:6px}
+.sh>div{border-radius:7px;padding:6px 0;text-align:center;font-size:11px;font-weight:700}
+.ckg{background:rgba(255,255,255,.08);color:#fff}
+.crp{background:rgba(255,255,255,.08);color:#fff}
+.sr{display:grid;grid-template-columns:28px 1fr 1fr;gap:5px;margin-bottom:5px;align-items:center}
+.sn{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;text-align:center;color:#fff}
+.ikg{background:var(--bg3);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:9px 4px;font-size:15px;text-align:center;width:100%;font-weight:700;font-family:'DM Mono',monospace}
+.ikg:focus{outline:none;border-color:var(--g)}
+.irp{background:var(--bg3);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:9px 4px;font-size:15px;text-align:center;width:100%;font-weight:700;font-family:'DM Mono',monospace}
+.irp:focus{outline:none;border-color:var(--g)}
+.tt-wrap{position:relative;display:inline-flex;align-items:center;gap:3px}
+.tt-q{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:9px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border:none;font-family:'DM Sans',sans-serif}
+.tt-box{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#1a1a1a;border:1px solid var(--g);border-radius:10px;padding:10px 12px;font-size:11px;color:#fff;line-height:1.9;white-space:nowrap;z-index:99;box-shadow:0 4px 20px rgba(0,0,0,.6)}
+.tt-box.on{display:block}
+.chrono-bar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin:8px 16px 0;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.chrono-time{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--g);letter-spacing:2px;min-width:104px}
+.chr-btn{border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif}
+/* TIMER OVERLAY */
+.tov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.97);align-items:center;justify-content:center;z-index:999;flex-direction:column}
+.tov.on{display:flex}
+/* CARDIO */
+.copt{background:var(--bg3);border:1px solid var(--g);border-radius:12px;padding:12px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.15s}
+.copt.selected{background:rgba(0,230,118,.08);border-color:var(--g);box-shadow:0 0 0 1px var(--g)}
+/* BUTTONS */
+.btn-yt{background:rgba(255,50,50,.1);border:1px solid var(--g);color:#ff4444;border-radius:6px;padding:4px 9px;font-size:11px;text-decoration:none;font-weight:700;flex-shrink:0}
+
+.btn-timer{background:var(--bg3);border:1px solid var(--g);color:#fff;border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer;font-weight:700;flex-shrink:0;font-family:'DM Sans',sans-serif}
+.btn-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-weight:600;font-family:'DM Sans',sans-serif}
+.prog-badge{background:rgba(0,230,118,.12);color:var(--g);font-size:10px;padding:2px 7px;border-radius:20px;font-weight:700;vertical-align:middle}
+/* HISTORY */
+.hw{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin:6px 16px 0;overflow:hidden}
+.hw-h{padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.hw-bd{display:none;border-top:1px solid var(--border);padding:12px 16px}
+.hw-bd.on{display:block}
+/* NUTRITION */
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.mc{border-radius:10px;padding:10px 6px;text-align:center}
+.mv{font-family:'Bebas Neue',sans-serif;font-size:22px}
+.ml2{font-size:9px;color:var(--dim);margin-top:2px;letter-spacing:1px}
+.meal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin:6px 16px 0;overflow:hidden}
+.meal-h{padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.meal-bd{display:none;border-top:1px solid var(--border);padding:12px 16px}
+.meal-bd.on{display:block}
+.meal-item{font-size:13px;color:var(--txt2);padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-start}
+.meal-item:last-child{border-bottom:none}
+.supp{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--g);border-radius:12px;margin:6px 16px 0;padding:13px 16px;display:flex;align-items:center;gap:12px}
+/* FORM */
+.finput{background:var(--bg3);border:1px solid var(--border);color:var(--txt);border-radius:10px;padding:10px 12px;font-size:15px;width:100%;font-weight:600;font-family:'DM Sans',sans-serif}
+.finput:focus{outline:none;border-color:var(--g)}
+select.finput{height:44px}
+/* GLOSSAIRE — tout vert/blanc */
+.gl{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin:6px 16px 0;overflow:hidden}
+.gl-h{padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.gl-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:'DM Mono',monospace;flex-shrink:0;background:var(--bg3);border:1px solid var(--g);color:var(--g)}
+.gl-term{color:var(--g);font-weight:800;font-size:15px}
+.gl-sub{color:var(--dim);font-size:11px;margin-top:2px}
+.gl-bd{display:none;border-top:1px solid var(--border);padding:14px 16px}
+.gl-bd.on{display:block}
+.gl-line{font-size:13px;line-height:1.85;color:var(--txt2)}
+.gl-line.b{color:var(--txt)}
+.gl-line.h{color:#fff;font-weight:700;font-size:13px;margin-top:8px}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- TIMER OVERLAY -->
+<div class="tov" id="tov">
+  <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:3px;margin-bottom:24px">TEMPS DE REPOS</div>
+  <div style="position:relative;width:150px;height:150px;margin-bottom:24px">
+    <svg width="150" height="150" viewBox="0 0 150 150" style="transform:rotate(-90deg)">
+      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--bg3)" stroke-width="7"/>
+      <circle id="tarc" cx="75" cy="75" r="64" fill="none" stroke="var(--g)" stroke-width="7"
+        stroke-dasharray="402" stroke-dashoffset="0" stroke-linecap="round"
+        style="transition:stroke-dashoffset 1s linear"/>
+    </svg>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:#fff;letter-spacing:2px" id="tdisp">0:00</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:2px;margin-top:-6px" id="ttot"></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px">
+    <button id="tpause" onclick="tTog()" style="background:var(--bg2);border:1px solid var(--border);color:var(--txt);border-radius:12px;padding:12px 20px;font-weight:700;font-size:15px;cursor:pointer;min-width:56px">⏸</button>
+    <button onclick="tClose()" style="background:var(--g);color:#000;border:none;border-radius:12px;padding:12px 24px;font-weight:700;font-size:15px;cursor:pointer;font-family:'DM Sans',sans-serif">Passer →</button>
+  </div>
+</div>
+
+<!-- ══════════════ ACCUEIL ══════════════ -->
+<div class="page on" id="pg-home">
+  <div class="hdr" style="padding:14px 16px 12px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1"><span style="color:var(--g)">PROGRAMME</span> BUARD</div>
+        <div id="wkDates" style="font-size:11px;color:#fff;margin-top:3px"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button onclick="wkChg(-1)" style="background:var(--bg2);border:1px solid var(--g);color:#fff;border-radius:9px;width:34px;height:34px;cursor:pointer;font-size:16px;font-weight:900">−</button>
+        <div style="background:var(--bg2);border:1px solid var(--g);border-radius:9px;padding:0 14px;height:34px;display:flex;align-items:center">
+          <span id="wkLbl" style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff">S1</span>
+        </div>
+        <button onclick="wkChg(1)" style="background:var(--bg2);border:1px solid var(--g);color:#fff;border-radius:9px;width:34px;height:34px;cursor:pointer;font-size:17px;font-weight:900">+</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar">
+    <div class="nb on" id="nb1" onclick="goPg('pg-hist','nb1');buildHist()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Historique
+    </div>
+    <div class="nb" id="nb2" onclick="goPg('pg-nut','nb2')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      Nutrition
+    </div>
+    <div class="nb" id="nb3" onclick="goPg('pg-gloss','nb3')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      Glossaire
+    </div>
+  </nav>
+
+  <div id="statsCard" style="margin:10px 16px 0;background:var(--bg2);border:1px solid var(--g);border-radius:var(--r);padding:14px 16px"></div>
+
+  <span class="slbl">SÉANCES</span>
+  <div id="homeList"></div>
+
+  <div class="sc" onclick="loadSat()" style="margin-bottom:0;border-color:#00e67640">
+    <div class="sc-in">
+      <div style="width:44px;height:44px;border-radius:12px;background:#00e67618;border:1px solid #00e67640;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏃</div>
+      <div style="flex:1">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#00e676;letter-spacing:2px">SAMEDI</div>
+        <div style="font-weight:700;font-size:16px;color:var(--txt)">Cardio Intensif</div>
+        <div style="font-size:11px;color:#fff;margin-top:2px">30-45 min · HIIT · Battle Rope · Rameur</div>
+      </div>
+      <div style="color:#00e676;font-size:34px;line-height:1;opacity:1">›</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════ SESSION ══════════════ -->
+<div class="page" id="pg-sess">
+  <div class="sess-hdr">
+    <button class="btn-back" onclick="goHome()">←</button>
+    <div style="flex:1">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--g);letter-spacing:2px" id="sLbl"></div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;line-height:1.1" id="sTitle"></div>
+      <div style="font-size:11px;color:#fff" id="sSub"></div>
+    </div>
+  </div>
+
+  <div class="ac" style="margin-top:6px">
+    <div class="ac-h" onclick="acTog('wuBd','wuChv')">
+      <span class="ac-title">🔥 Échauffement</span>
+      <span id="wuChv" style="color:var(--g);font-size:16px">▼</span>
+    </div>
+    <div class="ac-bd" id="wuBd"><div id="wuCnt"></div></div>
+  </div>
+
+  <span class="slbl" id="exoLbl">EXERCICES</span>
+  <div id="exoList"></div>
+  <div id="cardioZone"></div>
+
+  <div class="ac" style="margin-top:8px">
+    <div class="ac-h" onclick="acTog('strBd','strChv')">
+      <span class="ac-title">🧘 Étirements</span>
+      <span id="strChv" style="color:var(--g);font-size:16px">▼</span>
+    </div>
+    <div class="ac-bd" id="strBd"><div id="strCnt"></div></div>
+  </div>
+  <div style="margin:8px 16px 16px">
+    <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--g);letter-spacing:2px;margin-bottom:6px">📝 NOTE DE SÉANCE</div>
+    <input type="text" id="sessNote" placeholder="Fatigue · Douleur · Super forme · Manque de sommeil..." class="finput" style="font-size:12px;border-color:var(--g)" oninput="saveNote()"/>
+  </div>
+</div>
+
+<!-- ══════════════ HISTORIQUE ══════════════ -->
+<div class="page" id="pg-hist">
+  <div class="sess-hdr">
+    <button class="btn-back" onclick="goHome()">←</button>
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--g);letter-spacing:2px">SUIVI</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;line-height:1.1">HISTORIQUE</div>
+    </div>
+    <div style="display:flex;gap:6px;margin-left:auto">
+      <button class="btn-timer" onclick="exportCSV()" style="font-size:11px;padding:5px 10px">📥 Export</button>
+      <button class="btn-danger" onclick="clearAll()">🗑</button>
+    </div>
+  </div>
+  <div id="histCnt"></div>
+</div>
+
+<!-- ══════════════ NUTRITION ══════════════ -->
+<div class="page" id="pg-nut">
+  <div class="sess-hdr">
+    <button class="btn-back" onclick="goHome()">←</button>
+    <div style="flex:1">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--g);letter-spacing:2px">ALIMENTATION</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;line-height:1.1">NUTRITION</div>
+    </div>
+    <a href="https://play.google.com/store/apps/details?id=com.josmantek.macros" target="_blank" style="background:var(--bg3);border:1px solid var(--g);border-radius:10px;padding:8px 12px;font-size:11px;color:var(--g);font-weight:700;text-decoration:none;flex-shrink:0">📊 Macros</a>
+  </div>
+  <span class="slbl">CONSEILS ESSENTIELS</span>
+  <div id="adviceCnt"></div>
+</div>
+
+<!-- ══════════════ GLOSSAIRE ══════════════ -->
+<div class="page" id="pg-gloss">
+  <div class="sess-hdr">
+    <button class="btn-back" onclick="goHome()">←</button>
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--g);letter-spacing:2px">LEXIQUE</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;line-height:1.1">GLOSSAIRE</div>
+    </div>
+  </div>
+  <div style="margin-top:8px" id="glossCnt"></div>
+</div>
+
+<script>
+const SESS=[
+  {id:1,name:"PUSH 1",day:"Lundi",tag:"Pecs · Épaules · Triceps",type:"push",cardio:{n:"Tapis de course",d:"15 min modéré OU 10 min HIIT (1 min rapide / 1 min lent)",s:900,v:"https://www.youtube.com/results?search_query=HIIT+tapis+course+cardio+musculation+fran%C3%A7ais"},exos:[
+    {n:"Développé couché barre",s:5,r:"3",t:null,rest:120,v:"https://www.youtube.com/results?search_query=développé+couché+barre+technique+musculation+français",tip:"Coudes à 45°. Descends la barre au bas du torse. Remonte sans tendre complètement les coudes."},
+    {n:"Développé incliné haltère",s:4,r:"10",t:"2010",rest:90,v:"https://www.youtube.com/results?search_query=d%C3%A9velopp%C3%A9+inclin%C3%A9+halt%C3%A8re+technique+musculation",tip:"Haltères sur genoux, lance-les en t'allongeant. Contrôle la descente, bonne amplitude."},
+    {n:"Dips (lesté ou non)",s:3,r:"15/12/12",t:"2011",rest:90,v:"https://www.youtube.com/results?search_query=dips+pectoraux+technique+musculation+fran%C3%A7ais",tip:"Mains parallèles, descends en te penchant. Remonte sans tendre les coudes."},
+    {n:"Poulie vis-à-vis",s:4,r:"12-15",t:"2010",rest:75,v:"https://www.youtube.com/results?search_query=poulie+vis+a+vis+pectoraux+technique+musculation",tip:"Retiens la phase excentrique. Bombe la cage thoracique, omoplates en arrière."},
+    {n:"Développé militaire haltère",s:3,r:"8",t:"1010",rest:90,v:"https://www.youtube.com/results?search_query=d%C3%A9velopp%C3%A9+militaire+halt%C3%A8re+technique+musculation",tip:"Lance les haltères avec les genoux. Ne descends pas trop en dessous de la perpendiculaire."},
+    {n:"Barre au front",s:4,r:"12/10/8",t:"3011",rest:90,v:"https://www.youtube.com/results?search_query=barre+au+front+triceps+technique+musculation+fran%C3%A7ais",tip:"Contrôle la descente 3 sec. Reste contracté en haut 1 sec. Épaules fixes."},
+    {n:"Élévation latérale",s:4,r:"20/15/12/12",t:"1020",rest:60,v:"https://www.youtube.com/results?search_query=%C3%A9l%C3%A9vation+lat%C3%A9rale+halt%C3%A8re+technique+%C3%A9paules",tip:"Remonte juste en dessous de l'alignement des bras. Contrôle la descente 2 sec."},
+    {n:"Extension triceps corde",s:4,r:"12",t:"1120",rest:90,v:"https://www.youtube.com/results?search_query=extension+triceps+corde+poulie+technique+musculation",tip:"Corps légèrement en avant. Remonte la corde en haut. Contrôle la descente 2 sec."},
+    {n:"Gainage",s:5,r:"5 séries",t:null,rest:60,v:"https://www.youtube.com/results?search_query=gainage+abdos+technique+musculation+fran%C3%A7ais",tip:"Maintiens 90 à 120 secondes par série. Dos droit, abdos contractés, respiration régulière."},
+  ]},
+  {id:2,name:"PULL 1",day:"Mardi",tag:"Dos · Biceps · Trapèzes",type:"pull",cardio:{n:"Corde à sauter + Boxe",d:"5 min corde à sauter → 5 min shadow boxing → répéter × 2",s:1200,v:"https://www.youtube.com/results?search_query=corde+sauter+boxe+cardio+musculation+fran%C3%A7ais"},exos:[
+    {n:"Soulever de terre — 1RM",s:1,r:"MAX",t:null,rest:180,v:"https://www.youtube.com/results?search_query=soulever+de+terre+technique+musculation+fran%C3%A7ais",tip:"Traditionnel ou sumo. Prise inversée possible. Dos droit. Bien s'échauffer avant."},
+    {n:"Soulever de terre — 5×5",s:5,r:"5",t:null,rest:120,v:"https://www.youtube.com/results?search_query=soulever+de+terre+technique+musculation+fran%C3%A7ais",tip:"Même technique. Surcharge progressive chaque semaine."},
+    {n:"Tractions (lesté ou non)",s:3,r:"8-10",t:null,rest:90,v:"https://www.youtube.com/results?search_query=tractions+dos+technique+musculation+fran%C3%A7ais",tip:"Prise largeur d'épaules ou plus large. Si trop simple, leste-toi."},
+    {n:"Rowing à la barre",s:4,r:"12/10/8/6",t:"1120",rest:120,v:"https://www.youtube.com/results?search_query=rowing+barre+dos+technique+musculation+fran%C3%A7ais",tip:"Corps penché en avant, dos droit. Mouvement contrôlé même proche de l'échec."},
+    {n:"Tirage vertical poulie",s:3,r:"12/12/10",t:null,rest:90,v:"https://www.youtube.com/results?search_query=tirage+vertical+poulie+dos+technique+musculation",tip:"Bombe le torse, rétracte les omoplates. Cambre légèrement."},
+    {n:"BISET — Shrug haltère",s:4,r:"15",t:null,rest:null,v:"https://www.youtube.com/results?search_query=shrug+halt%C3%A8re+trap%C3%A8zes+technique+musculation",tip:"Bras le long du corps. Hausse les épaules sans bouger coudes ni poignets."},
+    {n:"+ Face pull",s:4,r:"10-12",t:null,rest:90,v:"https://www.youtube.com/results?search_query=face+pull+trap%C3%A8zes+technique+musculation+fran%C3%A7ais",tip:"Enchaîne directement. Ramène la poulie vers le visage. Contracte les trapèzes."},
+    {n:"Curl marteau",s:4,r:"10",t:"1120",rest:90,v:"https://www.youtube.com/results?search_query=curl+marteau+halt%C3%A8re+biceps+technique+musculation",tip:"Prise neutre. Contracte en haut, contrôle la descente. Léger flex en bas."},
+    {n:"Curl à la poulie basse",s:4,r:"20/15/12/10",t:"1120",rest:90,v:"https://www.youtube.com/results?search_query=curl+poulie+basse+biceps+technique+musculation+fran%C3%A7ais",tip:"Prise supination. Reste contracté en haut, contrôle la descente."},
+  ]},
+  {id:3,name:"LEGS",day:"Mercredi",tag:"Quadri · Ischios · Fessiers · Mollets",type:"legs",cardio:false,exos:[
+    {n:"Squat barre — Force 3×3",s:3,r:"3",t:null,rest:180,v:"https://www.youtube.com/results?search_query=squat+barre+technique+musculation+fran%C3%A7ais",tip:"Mouvement de force, pas de tempo. Dos droit."},
+    {n:"Squat barre — Hypertrophie 3×10",s:3,r:"10",t:null,rest:120,v:"https://www.youtube.com/results?search_query=squat+barre+technique+musculation+fran%C3%A7ais",tip:"Contracte les trapèzes, genoux droits. Descente 3 sec, remontée explosive."},
+    {n:"Presse jambes",s:4,r:"15/12/10/8",t:null,rest:120,v:"https://www.youtube.com/results?search_query=presse+jambes+technique+musculation+fran%C3%A7ais",tip:"Pieds en bas = quadris. Pieds en haut = fessiers + ischios."},
+    {n:"Leg extension",s:5,r:"15/12/10/10/10",t:"1120",rest:90,v:"https://www.youtube.com/results?search_query=leg+extension+quadriceps+technique+musculation",tip:"Retient la descente. Reste contracté 1 sec en haut."},
+    {n:"Leg curl",s:4,r:"20/15/12/12",t:"1130",rest:60,v:"https://www.youtube.com/results?search_query=leg+curl+ischio+technique+musculation+fran%C3%A7ais",tip:"Remonte explosif. Reste contracté 1 sec. Descente 3 sec."},
+    {n:"SDT roumain haltère",s:4,r:"15/12/10/10",t:null,rest:75,v:"https://www.youtube.com/results?search_query=soulever+de+terre+roumain+halt%C3%A8re+technique+musculation",tip:"Ne va pas tout en bas ni tout en haut. Muscle sous tension permanent."},
+    {n:"Extension mollet barre guidée",s:8,r:"15-20",t:null,rest:60,v:"https://www.youtube.com/results?search_query=extension+mollet+barre+guid%C3%A9e+technique+musculation",tip:"Retient la descente. Contracte bien en haut."},
+    {n:"Crunch à la poulie",s:5,r:"20",t:null,rest:45,v:"https://www.youtube.com/results?search_query=crunch+poulie+abdos+technique+musculation+fran%C3%A7ais",tip:"Mains derrière la tête. Enroule le bassin. Proche de l'échec à la 15ème rep."},
+  ]},
+  {id:4,name:"PUSH 2",day:"Jeudi",tag:"Pecs · Épaules · Triceps",type:"push",cardio:{n:"Rameur",d:"15 min intensité modérée — récupération active idéale",s:900,v:"https://www.youtube.com/results?search_query=rameur+intensif+cardio+musculation+fran%C3%A7ais"},exos:[
+    {n:"Dips lesté",s:5,r:"6-10",t:"2010",rest:90,v:"https://www.youtube.com/results?search_query=dips+pectoraux+technique+musculation+fran%C3%A7ais",tip:"Ceinture de lest ou haltère. Descends jusqu'à 90°, remonte explosif."},
+    {n:"Développé incliné barre guidée",s:4,r:"10-12",t:"2011",rest:90,v:"https://www.youtube.com/results?search_query=d%C3%A9velopp%C3%A9+inclin%C3%A9+halt%C3%A8re+technique+musculation",tip:"Omoplates en arrière, sors les pecs. Contrôle la descente, contracte en haut."},
+    {n:"Vis-à-vis poulie basse",s:3,r:"12-15",t:null,rest:60,v:"https://www.youtube.com/results?search_query=poulie+vis+a+vis+pectoraux+technique+musculation",tip:"Cible le haut des pecs. Mouvement convergent vers le haut."},
+    {n:"Vis-à-vis poulie haute",s:3,r:"12-15",t:null,rest:60,v:"https://www.youtube.com/results?search_query=poulie+vis+a+vis+pectoraux+technique+musculation",tip:"Cible le bas des pecs. Rapproche les 2 mains en contractant."},
+    {n:"SUPERSET — Dév. militaire haltère",s:4,r:"8",t:null,rest:null,v:"https://www.youtube.com/results?search_query=d%C3%A9velopp%C3%A9+militaire+halt%C3%A8re+technique+musculation",tip:"Banc à 90°. Lance les haltères avec les genoux. Enchaîne SANS repos avec extension triceps."},
+    {n:"+ Extension triceps poulie haute",s:4,r:"10",t:null,rest:90,v:"https://www.youtube.com/results?search_query=extension+triceps+corde+poulie+technique+musculation",tip:"Corde derrière la tête. Contrôle la phase excentrique. Prend 1min30 de repos après le superset."},
+    {n:"Élévation latérale poulie basse",s:6,r:"12/12/15/15/20/20",t:null,rest:75,v:"https://www.youtube.com/results?search_query=%C3%A9l%C3%A9vation+lat%C3%A9rale+halt%C3%A8re+technique+%C3%A9paules",tip:"Légèrement penché, poulie côté penché. Poids léger, ne remonte pas trop haut."},
+    {n:"Extension triceps poulie haute barre",s:5,r:"10-12",t:null,rest:90,v:"https://www.youtube.com/results?search_query=barre+au+front+triceps+technique+musculation+fran%C3%A7ais",tip:"Mains légèrement serrées. Descend et contracte en bas."},
+  ]},
+  {id:5,name:"PULL 2",day:"Vendredi",tag:"Dos · Biceps · Trapèzes",type:"pull",cardio:{n:"Vélo elliptique",d:"15 min résistance moyenne — cardio doux récupération active",s:900,v:"https://www.youtube.com/results?search_query=%C3%A9chauffement+v%C3%A9lo+elliptique+musculation"},exos:[
+    {n:"Rowing barre guidée",s:4,r:"10-12",t:"1120",rest:90,v:"https://www.youtube.com/results?search_query=rowing+barre+dos+technique+musculation+fran%C3%A7ais",tip:"Mains plus larges que les épaules en pronation. Retient 2 sec, contracté 1 sec en haut."},
+    {n:"Tirage vertical",s:4,r:"8/10/10/12",t:null,rest:90,v:"https://www.youtube.com/results?search_query=tirage+vertical+poulie+dos+technique+musculation",tip:"Bombe le torse, omoplates en arrière. Contracte en bas du mouvement."},
+    {n:"Tirage horizontal",s:4,r:"10",t:null,rest:75,v:"https://www.youtube.com/results?search_query=tirage+horizontal+dos+technique+musculation+fran%C3%A7ais",tip:"Cambre le dos, étire les dorsaux puis ramène vers la poitrine."},
+    {n:"BISET — Tractions",s:4,r:"10",t:null,rest:null,v:"https://www.youtube.com/results?search_query=tractions+dos+technique+musculation+fran%C3%A7ais",tip:"Prise plus large en pronation. 10 reps propres puis enchaîne SANS repos."},
+    {n:"+ Pull over poulie haute",s:4,r:"15-20",t:"1120",rest:90,v:"https://www.youtube.com/results?search_query=rowing+barre+dos+technique+musculation+fran%C3%A7ais",tip:"Rétracte les omoplates, penche-toi en avant. 1min30 après le biset."},
+    {n:"Oiseau vis-à-vis poulie",s:5,r:"15-20",t:"1120",rest:75,v:"https://www.youtube.com/results?search_query=face+pull+trap%C3%A8zes+technique+musculation+fran%C3%A7ais",tip:"Debout ou penché. Mouvement contrôlé, forte contraction en fin."},
+    {n:"Curl à la barre",s:4,r:"8-10",t:"1020",rest:90,v:"https://www.youtube.com/results?search_query=curl+poulie+basse+biceps+technique+musculation+fran%C3%A7ais",tip:"Prise supination largeur d'épaules. Dos droit, coudes le long du corps."},
+    {n:"Curl marteau poulie basse",s:4,r:"10-12",t:"1120",rest:75,v:"https://www.youtube.com/results?search_query=curl+marteau+halt%C3%A8re+biceps+technique+musculation",tip:"Debout, gainé. Contrôle la phase excentrique. Contracte biceps et avant-bras."},
+  ]},
+];
+const WU_G=[
+  {t:"Rotations épaules — 10 reps chaque sens",v:"https://www.youtube.com/results?search_query=rotation+%C3%A9paules+%C3%A9chauffement+musculation"},
+  {t:"Rotations hanches — 10 reps chaque sens",v:"https://www.youtube.com/results?search_query=rotation+hanches+%C3%A9chauffement+musculation"},
+  {t:"Rotations poignets et coudes — 10 reps chaque sens",v:"https://www.youtube.com/results?search_query=rotation+poignets+coudes+%C3%A9chauffement+musculation"},
+  {t:"Fentes dynamiques — 10 reps chaque jambe",v:"https://www.youtube.com/results?search_query=fentes+dynamiques+%C3%A9chauffement+musculation"},
+  {t:"Rotations du cou — 10 reps chaque sens",v:"https://www.youtube.com/results?search_query=rotation+cou+%C3%A9chauffement+musculation"},
+];
+const WU_L=[
+  {t:"Rotations hanches — 10 reps chaque sens",v:"https://www.youtube.com/results?search_query=rotation+hanches+%C3%A9chauffement+musculation"},
+  {t:"Rotations genoux — 10 reps chaque sens",v:"https://www.youtube.com/results?search_query=rotation+genoux+%C3%A9chauffement+musculation"},
+  {t:"Rotations chevilles — 10 reps chaque sens",v:"https://www.youtube.com/results?search_query=rotation+chevilles+%C3%A9chauffement+musculation"},
+  {t:"Squats à vide — 2×15 progressifs",v:"https://www.youtube.com/results?search_query=squat+barre+technique+musculation+fran%C3%A7ais"},
+  {t:"Fentes dynamiques — 10 reps chaque jambe",v:"https://www.youtube.com/results?search_query=fentes+dynamiques+%C3%A9chauffement+musculation"},
+];
+const STR={
+  push:[
+    {t:"Pectoraux",d:"Place-toi face à un mur, lève le bras à hauteur d'épaule et appuie la paume contre le mur. Tourne doucement ton corps vers l'opposé jusqu'à sentir l'étirement dans la poitrine. 30 sec chaque côté.",s:30},
+    {t:"Triceps",d:"Lève un bras au-dessus de la tête, plie le coude pour amener la main dans le dos. Avec l'autre main, tire doucement le coude vers l'arrière. 30 sec chaque côté.",s:30},
+    {t:"Épaules",d:"Tends un bras devant toi et ramène-le horizontalement contre ta poitrine. Avec l'autre bras, appuie doucement dessus pour forcer l'étirement. 30 sec chaque côté.",s:30},
+    {t:"Cobra au sol",d:"Allonge-toi ventre au sol, mains à plat sous les épaules. Pousse sur les mains pour lever le buste en gardant le bassin au sol. Sens l'étirement sur la poitrine et les abdos. 3×30 sec.",s:30},
+  ],
+  pull:[
+    {t:"Grand dorsal",d:"Lève un bras et attache-toi à un montant ou un mur. Laisse ton poids tirer vers le bas en inclinant légèrement le corps sur le côté. Sens l'étirement sur tout le flanc. 30 sec chaque côté.",s:30},
+    {t:"Biceps",d:"Tends le bras avec la paume vers le haut. Avec l'autre main, tire doucement les doigts vers le bas jusqu'à sentir l'étirement sous l'avant-bras et le biceps. 30 sec.",s:30},
+    {t:"Trapèzes",d:"Assis ou debout, incline la tête sur le côté — oreille vers l'épaule. Laisse le poids de la tête faire le travail sans forcer. Tu dois sentir l'étirement sur le côté du cou. 30 sec chaque côté.",s:30},
+    {t:"Position enfant",d:"À genoux au sol, assis sur les talons. Tends les deux bras devant toi au sol et baisse le front vers le sol. Respire profondément et relâche le dos complètement.",s:60},
+  ],
+  legs:[
+    {t:"Quadriceps",d:"Debout, plie un genou en arrière et tiens ta cheville avec la main. Garde le buste droit et les deux genoux alignés. Tu dois sentir l'étirement à l'avant de la cuisse. 30 sec chaque jambe.",s:30},
+    {t:"Ischios-jambiers",d:"Assis au sol, jambes tendues devant toi. Penche-toi lentement vers l'avant en gardant le dos droit — ne te courbe pas. Tu dois sentir l'étirement à l'arrière des cuisses.",s:60},
+    {t:"Fessiers",d:"Allongé sur le dos, ramène un genou vers ta poitrine avec les deux mains. Maintiens sans forcer. Tu dois sentir l'étirement dans la fesse. 30 sec chaque jambe.",s:30},
+    {t:"Mollets",d:"Debout face à un mur, appuie les mains dessus. Recule un pied et garde la jambe arrière tendue, talon au sol. Pousse doucement les hanches vers le mur. Tu sens l'étirement dans le mollet. 30 sec chaque jambe.",s:30},
+    {t:"Fente basse statique",d:"Fais un grand pas en avant, genou avant à 90°, genou arrière au sol. Garde le buste droit et laisse le bassin descendre progressivement. Tu sens l'étirement dans la cuisse arrière. 30 sec chaque jambe.",s:30},
+  ],
+};
+const CARDIO_POST=[
+  {n:"Tapis de course",d:"15 min modéré OU 10 min HIIT (1 min rapide / 1 min lent)",s:900},
+  {n:"Rameur",d:"15 min intensité modérée — récupération active idéale",s:900},
+  {n:"Vélo elliptique",d:"15 min résistance moyenne",s:900},
+  {n:"Corde à sauter",d:"10 min — 2 min saut + 1 min repos × 3",s:600},
+];
+const CARDIO_SAT=[
+  {n:"Corde lourde + Corde à sauter",d:"6 fois 30 secondes de corde lourde, puis 30 secondes de repos. Ensuite 6 fois 30 secondes de corde à sauter. Répéter 3 fois en tout.",s:1800,v:"https://www.youtube.com/results?search_query=battle+rope+HIIT+cardio+musculation+fran%C3%A7ais"},
+  {n:"Course à pied — HIIT",d:"5 minutes de marche rapide pour s'échauffer. Puis 8 fois : 30 secondes de sprint suivi de 1 minute de marche. Finir par 5 minutes de marche lente.",s:1500,v:"https://www.youtube.com/results?search_query=HIIT+tapis+course+cardio+musculation+fran%C3%A7ais"},
+  {n:"Rameur + Vélo elliptique",d:"10 minutes de rameur à intensité moyenne, 2 minutes de repos. Puis 10 minutes d'elliptique en résistance élevée, 2 minutes de repos. Répéter 1 fois.",s:2400,v:"https://www.youtube.com/results?search_query=rameur+cardio+musculation+fran%C3%A7ais"},
+  {n:"Circuit salle complet",d:"5 minutes rameur → 3 minutes corde lourde → 3 minutes corde à sauter → 10 abdos roulette × 3 séries. Répéter le circuit 2 fois en tout.",s:2400,v:"https://www.youtube.com/results?search_query=circuit+cardio+salle+musculation+fran%C3%A7ais"},
+  {n:"Boxe + Cardio léger",d:"3 fois 3 minutes de boxe à l'ombre (shadow boxing), 1 minute de repos entre chaque. Puis 3 fois 2 minutes de corde à sauter. Finir par 10 minutes de tapis à allure modérée.",s:1800,v:"https://www.youtube.com/results?search_query=shadow+boxing+cardio+musculation+fran%C3%A7ais"},
+];
+const MEALS=[
+  {ico:"🌅",h:"Matin",kcal:470,p:25,g:65,l:12,items:["Flocons d'avoine 80g + lait","2 œufs ou 150g yaourt grec 0%","1 banane","Multivitamines + Oméga 3"]},
+  {ico:"🥜",h:"10h — Collation",kcal:300,p:22,g:20,l:15,items:["200g fromage blanc 0%","30g amandes","1 fruit"]},
+  {ico:"🍽️",h:"12h — Déjeuner",kcal:620,p:45,g:85,l:10,items:["Riz blanc 120g (poids cru)","Poulet ou poisson 180g","Légumes verts à volonté","1 c.s. huile d'olive"]},
+  {ico:"09",h:"16h — Pré-séance",kcal:270,p:28,g:35,l:2,items:["Whey 30g + eau","1 banane ou 2 tranches pain complet","500ml eau minimum"]},
+  {ico:"🌙",h:"19h — Dîner",kcal:380,p:42,g:30,l:10,items:["Viande maigre 180g (poulet, dinde, bœuf)","Légumes cuits à volonté","Patate douce 100g (optionnel)"]},
+];
+const SUPPS=[
+  {n:"Whey Protéine",q:"Post-séance — dans les 30 min",d:"30g dans 200ml eau ou lait"},
+  {n:"Créatine",q:"Tous les jours (séance ou repos)",d:"5g dans le shaker"},
+  {n:"Oméga 3",q:"Au repas — matin ou soir",d:"2-3g par jour (2-3 gélules)"},
+  {n:"Multivitamines",q:"Au petit-déjeuner",d:"1 comprimé par jour"},
+];
+const GLOSS=[
+  {term:"PUSH — Pousser",ico:"01",sub:"Pecs · Épaules · Triceps",def:"PUSH = pousser en anglais.\n\nTous les mouvements où tu pousses la charge loin de toi.\n\nMuscles travaillés :\n• Pectoraux (poitrine)\n• Deltoïdes (épaules)\n• Triceps (arrière des bras)\n\nExemples :\n• Développé couché · Dips · Dév. militaire · Élévations latérales"},
+  {term:"PULL — Tirer",ico:"02",sub:"Dos · Biceps · Trapèzes",def:"PULL = tirer en anglais.\n\nTous les mouvements où tu tires la charge vers toi.\n\nMuscles travaillés :\n• Grand dorsal\n• Trapèzes\n• Biceps\n\nExemples :\n• Tractions · Rowing · Tirage poulie · Curls biceps"},
+  {term:"LEGS — Jambes",ico:"03",sub:"Quadri · Ischios · Fessiers · Mollets",def:"LEGS = jambes en anglais.\n\nSéance entière dédiée au bas du corps.\n\nMuscles travaillés :\n• Quadriceps (avant des cuisses)\n• Ischios-jambiers (arrière)\n• Fessiers\n• Mollets\n\nExemples :\n• Squat · Presse jambes · Leg curl · SDT roumain"},
+  {term:"Surcharge progressive",ico:"04",sub:"Progresser semaine après semaine",def:"Le principe de base de la musculation.\nObjectif : augmenter le poids le plus souvent possible, sans limite théorique.\n\nRÈGLE D'OR :\n• Technique parfaite avant poids\n• Si tu sacrifies la forme → tu te blesses et tu régresses\n\nCOMMENT PROGRESSER :\n\n4×10 (reps fixes) :\n• Les reps ne changent pas\n• Si tu fais 4×10 proprement → +2.5kg la semaine suivante\n• Tu restes à 10 reps mais le poids monte toujours\n\n4×12-15 (fourchette) :\n• Tu pars à 12 reps\n• Tu montes vers 15 sur les semaines suivantes\n• Quand tu arrives à 4×15 proprement → +2.5kg et retour à 12\n\n5×3 ou 5×5 (force) :\n• Toutes les séries complètes proprement → +2.5kg la semaine suivante\n\nLE JUSTE MILIEU :\n• Trop léger : tu finis sans effort → monte le poids\n• Trop lourd : tu ne finis pas les reps → garde le poids\n• PARFAIT : tu termines la dernière rep en étant proche de l'échec"},
+  {term:"Tempo — ex: 2010",ico:"05",sub:"Vitesse d'exécution",def:"4 chiffres = 4 phases du mouvement.\n\nTEMPO 2010 :\n• 2 = descente 2 secondes\n• 0 = pas de pause en bas\n• 1 = remontée 1 seconde\n• 0 = pas de pause en haut\n\nObjectif : contrôler le temps sous tension → hypertrophie maximale."},
+  {term:"Hypertrophie",ico:"06",sub:"Faire grossir un muscle",def:"Le processus par lequel un muscle grossit.\n\n1. Micro-déchirures musculaires à l'entraînement\n2. Protéines pour réparer les fibres\n3. Sommeil pour reconstruire plus gros\n\nConditions optimales :\n• 6-15 reps par série\n• Temps sous tension : 30-60 sec\n• Surcharge progressive chaque semaine"},
+  {term:"Temps sous tension",ico:"07",sub:"Durée d'activation du muscle",def:"Durée pendant laquelle le muscle travaille sous charge.\n\nZone d'hypertrophie : 30 à 60 secondes par série.\nAu-delà = endurance musculaire.\n\nLa phase de descente (excentrique) crée le plus de micro-déchirures → contrôle TOUJOURS la descente."},
+  {term:"Biset",ico:"08",sub:"2 exercices même muscle, sans repos",def:"Enchaîner 2 exercices ciblant le MÊME groupe musculaire sans repos.\n\nExemple :\nShrug haltère → Face pull (tous deux = trapèzes)\n\nLe repos se prend APRÈS les 2 exercices."},
+  {term:"Superset",ico:"09",sub:"2 exercices muscles différents, sans repos",def:"Enchaîner 2 exercices ciblant des muscles DIFFÉRENTS sans repos.\n\nExemple :\nDév. militaire (épaules) → Extension triceps\n\nLe repos se prend APRÈS les 2.\nAvantage : gain de temps + intensité cardio maintenue."},
+  {term:"1RM — Répétition Maximale",ico:"10",sub:"Poids max soulevé 1 seule fois",def:"1 Répétition Maximum = poids que tu peux soulever UNE SEULE FOIS avec technique parfaite.\n\nDans le programme :\nAu SDT, tu testes ton 1RM puis travailles en 5×5.\n\n⚠️ Toujours bien s'échauffer progressivement avant.\n⚠️ Ne jamais tenter seul sans parade."},
+  {term:"Phase excentrique",ico:"11",sub:"Descente — le muscle s'étire",def:"Moment où le muscle s'ALLONGE sous la charge.\n\nExemples :\n• Développé couché : descente de la barre\n• Curl biceps : descente du poids\n• Squat : descente\n\nPhase la plus importante pour l'hypertrophie. Contrôle toujours la descente lentement."},
+  {term:"Phase concentrique",ico:"12",sub:"Remontée — le muscle se contracte",def:"Moment où le muscle se RACCOURCIT et se contracte.\n\nExemples :\n• Développé couché : poussée vers le haut\n• Curl biceps : montée du poids\n• Squat : remontée\n\nContracte volontairement le muscle cible à ce moment précis."},
+];
+
+let week=parseInt(localStorage.getItem('me_wk'))||1;
+let logs={};try{logs=JSON.parse(localStorage.getItem('me_lg'))||{};}catch(e){}
+const sd=localStorage.getItem('me_sd')||(()=>{const d=new Date().toISOString().split('T')[0];localStorage.setItem('me_sd',d);return d;})();
+function saveLogs(){localStorage.setItem('me_lg',JSON.stringify(logs));}
+let tTot=0,tRem=0,tRun=false,tInt=null;
+
+function goPg(id,nb){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById(nb).classList.add('on');
+  window.scrollTo(0,0);
+}
+function goHome(){
+  document.getElementById('exoList').innerHTML='';
+  document.getElementById('cardioZone').innerHTML='';
+  document.getElementById('strCnt').innerHTML='';
+  document.getElementById('wuCnt').innerHTML='';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pg-home').classList.add('on');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  buildStats();
+  window.scrollTo(0,0);
+}
+
+function wkChg(d){
+  week=Math.max(1,week+d);
+  localStorage.setItem('me_wk',week);
+  document.getElementById('wkLbl').textContent='S'+week;
+  // si une séance est ouverte, la recharger avec la nouvelle semaine
+  const sessPage=document.getElementById('pg-sess');
+  if(sessPage&&sessPage.classList.contains('on')&&window._currentSess){
+    loadSess(window._currentSess);
+  } else if(sessPage&&sessPage.classList.contains('on')&&window._currentSat){
+    loadSat();
+  } else {
+    const lbl=document.getElementById('sLbl');
+    if(lbl&&lbl.textContent.includes('SÉANCE')){
+      lbl.textContent=lbl.textContent.replace(/SEMAINE \d+/,'SEMAINE '+week);
+    }
+  }
+  buildDates();buildStats();
+}
+function buildDates(){
+  const s=new Date(sd);s.setDate(s.getDate()+(week-1)*7);
+  const e=new Date(s);e.setDate(e.getDate()+6);
+  const o={day:'numeric',month:'short'};
+  document.getElementById('wkDates').textContent=s.toLocaleDateString('fr-FR',o)+' – '+e.toLocaleDateString('fr-FR',o);
+}
+function buildStrip(){}
+function buildHomeList(){
+  const c=document.getElementById('homeList');
+  const cfg=[
+    {ico:'💪'},
+    {ico:'🏋️'},
+    {ico:'🦵'},
+    {ico:'💪'},
+    {ico:'🏋️'},
+  ];
+  const G='#00e676';
+  SESS.forEach((s,i)=>{
+    const el=document.createElement('div');
+    el.className='sc';
+    el.style.borderColor=G+'40';
+    el.onclick=()=>loadSess(s);
+    el.innerHTML=`<div class="sc-in">
+      <div style="width:44px;height:44px;border-radius:12px;background:${G}18;border:1px solid ${G}40;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${cfg[i].ico}</div>
+      <div style="flex:1">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:${G};letter-spacing:2px">${s.day.toUpperCase()}</div>
+        <div style="font-weight:700;font-size:16px;color:var(--txt)">${s.name}</div>
+        <div style="font-size:11px;color:#fff;margin-top:2px">${s.tag}</div>
+      </div>
+      <div style="color:${G};font-size:34px;line-height:1;opacity:1">›</div>
+    </div>`;
+    c.appendChild(el);
+  });
+}
+
+function loadSess(s){
+  window._currentSess=s;window._currentSat=false;
+  loadNote(s.id);
+  document.getElementById('sLbl').textContent=`SÉANCE ${s.id} · SEMAINE ${week}`;
+  document.getElementById('sTitle').textContent=s.name;
+  document.getElementById('sSub').textContent=s.day+' · '+s.tag;
+  chrReset();
+  const wu=s.id===3?WU_L:WU_G;
+  let h=s.note?`<div style="background:rgba(255,165,0,.06);border:1px solid rgba(255,165,0,.15);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--txt2);margin-bottom:10px">⚠️ ${s.note}</div>`:'';
+  wu.forEach((w,i)=>h+=`<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;${i<wu.length-1?'border-bottom:1px solid var(--border)':''}"><span style="color:#fff;font-size:13px;flex:1">• ${w.t}</span><button class="btn-timer" onclick="tStart(30,event)" style="flex-shrink:0">⏱ 30"</button></div>`);
+  document.getElementById('wuCnt').innerHTML=h;
+  document.getElementById('exoLbl').style.display='block';
+  const el=document.getElementById('exoList');el.innerHTML='';
+  s.exos.forEach((ex,ei)=>el.appendChild(mkExo(ex,s.id,ei)));
+  const cz=document.getElementById('cardioZone');
+  if(s.cardio){
+    const c=s.cardio;
+    cz.innerHTML=`<span class="slbl">CARDIO POST-SÉANCE</span>
+    <div class="exo" style="border-color:var(--g)">
+      <div class="exo-h" style="cursor:default">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:14px;color:var(--txt)">❤️ ${c.n}</div>
+          <div style="font-size:11px;color:#fff;margin-top:4px">${c.d}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;margin-left:8px">
+          <button class="btn-timer" onclick="tStart(${c.s},event)">⏱ ${Math.floor(c.s/60)}'</button>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    cz.innerHTML=`<div style="margin:8px 16px 0;background:rgba(0,230,118,.05);border:1px solid var(--g);border-radius:var(--r);padding:12px 16px"><div style="color:var(--g);font-weight:700;font-size:14px">🦵 Pas de cardio après LEGS</div><div style="color:#fff;font-size:12px;margin-top:3px">Priorité aux étirements et à la récupération.</div></div>`;
+  }
+  let sh='';
+  STR[s.type].forEach((x,i)=>{
+    sh+=`<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;${i<STR[s.type].length-1?'border-bottom:1px solid var(--border)':''}">
+      <div style="flex:1">
+        <span style="color:#fff;font-size:13px;font-weight:600">• ${x.t}</span>
+        <div style="color:#fff;font-size:11px;margin-top:3px;line-height:1.5">${x.d}</div>
+      </div>
+      <button class="btn-timer" onclick="tStart(${x.s},event)" style="flex-shrink:0">⏱ ${x.s}"</button>
+    </div>`;
+  });
+  sh+=`<div style="padding-top:10px;border-top:1px solid var(--border);margin-top:4px;text-align:center">
+    <a href="https://www.youtube.com/results?search_query=%C3%A9tirements+muscu+routine+d%C3%A9butant+fran%C3%A7ais" target="_blank" class="btn-yt" style="font-size:12px;padding:6px 14px">▶ YT — Routine étirements complète</a>
+  </div>`;
+  document.getElementById('strCnt').innerHTML=sh;
+  ['wuBd','strBd'].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('on');});
+  ['wuChv','strChv'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='▼';});
+  goPg('pg-sess','nb1');
+}
+
+function loadSat(){
+  window._currentSess=null;window._currentSat=true;
+  document.getElementById('sLbl').textContent=`SÉANCE 6 · SEMAINE ${week}`;
+  document.getElementById('sTitle').textContent='CARDIO 🔥';
+  document.getElementById('sSub').textContent='Samedi · 30-45 min';
+  chrReset();
+  document.getElementById('wuCnt').innerHTML=`<div style="color:#fff;font-size:13px;padding:8px 0">• 5 min marche rapide ou elliptique léger — monter progressivement en température avant l'effort intense</div>`;
+  document.getElementById('exoLbl').style.display='none';
+  document.getElementById('exoList').innerHTML='';
+  let ch=`<span class="slbl">FORMATS INTENSIFS</span><div style="font-family:'DM Mono',monospace;font-size:11px;color:#fff;letter-spacing:1px;padding:6px 16px 4px">→ Choisis ta séance du jour</div><div style="padding:0 16px">`;
+  CARDIO_SAT.forEach((c,i)=>ch+=`<div class="exo" id="csat_${i}" style="margin:0 0 6px;cursor:pointer;transition:.15s" onclick="selSat(${i})"><div class="exo-h" style="cursor:pointer"><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#fff">${c.n}</div><div style="font-size:11px;color:#fff;margin-top:4px">${c.d}</div></div><div style="display:flex;gap:6px;align-items:center;flex-shrink:0;margin-left:8px"><button class="btn-timer" style="font-size:15px;padding:9px 12px" onclick="tStart(${c.s},event)">⏱ ${Math.floor(c.s/60)}'</button></div></div></div>`);
+  ch+='</div>';document.getElementById('cardioZone').innerHTML=ch;
+  // restaure le choix précédent
+  const prev=parseInt(localStorage.getItem(`sat_w${week}`));
+  if(!isNaN(prev))setTimeout(()=>selSat(prev),50);
+  document.getElementById('strCnt').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><span style="color:#fff;font-size:13px;font-weight:600">• Marche lente</span><div style="color:#fff;font-size:11px;margin-top:3px">5 min de marche lente pour redescendre progressivement le rythme cardiaque.</div></div><button class="btn-timer" onclick="tStart(300,event)">⏱ 5'</button></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><span style="color:#fff;font-size:13px;font-weight:600">• Mollets</span><div style="color:#fff;font-size:11px;margin-top:3px">Pied contre un mur jambe tendue, talons au sol. 30 sec chaque jambe.</div></div><button class="btn-timer" onclick="tStart(30,event)">⏱ 30"</button></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><span style="color:#fff;font-size:13px;font-weight:600">• Ischios-jambiers</span><div style="color:#fff;font-size:11px;margin-top:3px">Assis au sol, jambes tendues, penche-toi en avant doucement.</div></div><button class="btn-timer" onclick="tStart(60,event)">⏱ 60"</button></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><span style="color:#fff;font-size:13px;font-weight:600">• Épaules</span><div style="color:#fff;font-size:11px;margin-top:3px">Bras tendu croisé devant la poitrine, maintiens avec l'autre bras. 30 sec chaque côté.</div></div><button class="btn-timer" onclick="tStart(30,event)">⏱ 30"</button></div>
+    <div style="padding-top:10px;border-top:1px solid var(--border);margin-top:4px;text-align:center"><a href="https://www.youtube.com/results?search_query=%C3%A9tirements+cardio+routine+d%C3%A9butant+fran%C3%A7ais" target="_blank" class="btn-yt" style="font-size:12px;padding:6px 14px">▶ YT — Routine étirements complète</a></div>`;
+  ['wuBd','strBd'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  ['wuChv','strChv'].forEach(id=>document.getElementById(id).textContent='▼');
+  goPg('pg-sess','nb1');
+}
+
+function togTip(id){
+  const b=document.getElementById(id);
+  if(b)b.classList.toggle('on');
+}
+function seriesTip(s,r){
+  if(r.includes('/')){
+    const parts=r.split('/');
+    return `${s} séries avec des reps dégressives :<br>`+parts.map((p,i)=>`<b>Série ${i+1} : ${p} reps</b>`).join('<br>');
+  } else if(r.includes('-')&&!r.includes('"')){
+    const [min,max]=r.split('-');
+    return `${s} séries de <b>${min} à ${max} reps</b>.<br>Tu pars à ${min}, tu montes jusqu'à ${max} sur toutes les séries.<br>Quand tu arrives à <b>${s}×${max}</b> proprement → <b>+2.5kg</b> et tu reviens à ${min} reps.`;
+  } else if(r.includes('"')){
+    return `${s} séries de <b>${r}</b> — temps de maintien.`;
+  } else {
+    return `${s} séries de <b>${r} reps</b> fixes.<br>Les reps ne changent pas — c'est le <b>poids qui augmente</b> chaque semaine.<br>Si tu fais les ${r} reps proprement → <b>+2.5kg</b> la semaine suivante.`;
+  }
+}
+function tempoTip(t){
+  const d=[
+    ['Descente','secondes — contrôle la phase excentrique'],
+    ['Pause en bas','seconde(s) — maintien en position basse'],
+    ['Remontée','seconde(s) — phase concentrique'],
+    ['Pause en haut','seconde(s) — maintien en position haute']
+  ];
+  return t.split('').map((c,i)=>`<b style="color:#fff">${d[i][0]} : ${c} ${d[i][1]}</b>`).join('<br>');
+}
+function mkExo(ex,sId,ei){
+  const spec=ex.n.startsWith('BISET')||ex.n.startsWith('SUPERSET')||ex.n.startsWith('+');
+  const key=`w${week}_s${sId}_e${ei}`;
+  if(!logs[key])logs[key]={sets:Array(12).fill(null).map(()=>({kg:'',rp:''}))};
+  const filled=logs[key].sets.slice(0,ex.s).filter(s=>s&&(s.kg||s.rp)).length;
+  const div=document.createElement('div');div.className='exo';div.id='ec_'+key;
+  const bId='eb_'+key,tId='et_'+key,tbId='etb_'+key;
+  let sg=`<div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--g);letter-spacing:2px;margin-bottom:6px">SÉRIE</div><div class="sh"><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);text-align:center">N°</div><div class="ckg">⬆ KG</div><div class="crp">⬆ REPS</div></div>`;
+  for(let i=0;i<ex.s;i++){
+    const kg=logs[key].sets[i]?logs[key].sets[i].kg:'';
+    const rp=logs[key].sets[i]?logs[key].sets[i].rp:'';
+    sg+=`<div class="sr"><div class="sn" style="font-size:10px;color:#fff">${i+1}</div><input type="number" inputmode="decimal" placeholder="—" value="${kg}" class="ikg" oninput="uSet('${key}',${i},'kg',this.value)"/><input type="number" inputmode="numeric" placeholder="—" value="${rp}" class="irp" oninput="uSet('${key}',${i},'rp',this.value)"/></div>`;
+  }
+  div.innerHTML=`
+    <div class="exo-h">
+      <div style="flex:1;min-width:0">
+        <div class="exo-name${spec?' spec':''}">${ex.n}${filled>0?` <span class="prog-badge">${filled}/${ex.s}</span>`:''}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:4px">
+          <span class="tag tg">${ex.s}×${ex.r}</span>
+          ${ex.t?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:#fff;padding:2px 7px;border-radius:5px;background:rgba(0,230,118,.08);border:1px solid var(--g)">TEMPO ${ex.t}</span>`:''}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;margin-left:8px">
+        ${ex.rest?`<button class="btn-timer" onclick="tStart(${ex.rest},event)">⏱ ${ex.rest}"</button>`:`<button class="btn-timer" onclick="tStart(90,event)">⏱ 90"</button>`}
+        <a href="${ex.v}" target="_blank" onclick="event.stopPropagation()" class="btn-yt">YT</a>
+        <span id="arr_${key}" onclick="togExo('${bId}','ec_${key}')" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;gap:1px">
+          <span style="color:var(--g);font-size:22px;font-weight:700;line-height:1">▼</span>
+          <span style="font-family:'DM Mono',monospace;font-size:8px;color:#fff;letter-spacing:1px">NOTER</span>
+        </span>
+      </div>
+    </div>
+    <div class="exo-bd" id="${bId}">
+      <div id="${tId}" class="tip">${ex.tip}${ex.t?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1)"><span style="color:var(--g);font-weight:700;font-size:11px">TEMPO ${ex.t}</span><br><span style="font-size:11px;line-height:1.9">${tempoTip(ex.t)}</span></div>`:''}<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1)"><span style="color:var(--g);font-weight:700;font-size:11px">${ex.s}×${ex.r}</span><br><span style="font-size:11px;line-height:1.9">${seriesTip(ex.s,ex.r)}</span></div><span onclick="document.getElementById('${tId}').classList.remove('on');document.getElementById('${tbId}').style.display='inline-block'" style="float:right;cursor:pointer;color:var(--g);font-size:16px;font-weight:700">✕</span></div>
+      <button id="${tbId}" class="tip-btn" onclick="document.getElementById('${tId}').classList.add('on');this.style.display='none'">💡 Conseil d'exécution</button>
+      ${sg}
+    </div>`;
+  return div;
+}
+function togExo(bId,cId){
+  const b=document.getElementById(bId),c=document.getElementById(cId);
+  b.classList.toggle('on');c.classList.toggle('open',b.classList.contains('on'));
+  const key=cId.replace('ec_','');
+  const arr=document.getElementById('arr_'+key);
+  if(arr){
+    const open=b.classList.contains('on');
+    arr.querySelector('span:first-child').textContent=open?'▲':'▼';
+    arr.querySelector('span:last-child').textContent=open?'':'NOTER';
+  }
+}
+function uSet(key,i,f,v){
+  if(!logs[key])logs[key]={sets:Array(12).fill(null).map(()=>({kg:'',rp:''}))};
+  if(!logs[key].sets[i])logs[key].sets[i]={kg:'',rp:''};
+  logs[key].sets[i][f]=v;saveLogs();buildStats();
+}
+function acTog(bId,cId){
+  const b=document.getElementById(bId);if(!b)return;
+  b.classList.toggle('on');
+  const c=document.getElementById(cId);if(c)c.textContent=b.classList.contains('on')?'▲':'▼';
+}
+
+function tStart(sec,e){
+  if(e)e.stopPropagation();
+  tTot=sec;tRem=sec;tRun=true;
+  clearInterval(tInt);
+  document.getElementById('tov').classList.add('on');
+  document.getElementById('tpause').textContent='⏸';
+  document.getElementById('tarc').style.strokeDashoffset=0;
+  tDraw();
+  tInt=setInterval(()=>{
+    if(tRun&&tRem>0){tRem--;tDraw();}
+    if(tRem===0){clearInterval(tInt);tRun=false;document.getElementById('tdisp').textContent='✓';document.getElementById('tdisp').style.color='var(--g)';}
+  },1000);
+}
+function tDraw(){
+  const m=Math.floor(tRem/60),s=tRem%60;
+  document.getElementById('tdisp').textContent=m+':'+String(s).padStart(2,'0');
+  document.getElementById('tdisp').style.color='#fff';
+  document.getElementById('ttot').textContent=tTot+'"';
+  document.getElementById('tarc').style.strokeDashoffset=tTot>0?402*(tTot-tRem)/tTot:0;
+}
+function tTog(){tRun=!tRun;document.getElementById('tpause').textContent=tRun?'⏸':'▶';}
+function tClose(){clearInterval(tInt);document.getElementById('tov').classList.remove('on');document.getElementById('tarc').style.strokeDashoffset=0;}
+
+function buildStats(){
+  const c=document.getElementById('statsCard');if(!c)return;
+  const wkeys=Object.keys(logs).filter(k=>k.startsWith('w'+week+'_'));
+  const sessIds=[...new Set(wkeys.map(k=>parseInt(k.split('_s')[1])))].filter(n=>!isNaN(n));
+  const nbSess=sessIds.length;
+  // semaine en cours
+  let volume=0,totalReps=0;
+  wkeys.forEach(k=>{
+    const ex=logs[k];if(!ex)return;
+    ex.sets.forEach(s=>{
+      if(s&&s.kg&&s.rp){volume+=parseFloat(s.kg)*parseInt(s.rp);totalReps+=parseInt(s.rp);}
+      else if(s&&s.rp){totalReps+=parseInt(s.rp);}
+    });
+  });
+  // semaine précédente
+  const prevWeek=week-1;
+  let volPrev=0,repsPrev=0;
+  if(prevWeek>0){
+    Object.keys(logs).filter(k=>k.startsWith('w'+prevWeek+'_')).forEach(k=>{
+      const ex=logs[k];if(!ex)return;
+      ex.sets.forEach(s=>{
+        if(s&&s.kg&&s.rp){volPrev+=parseFloat(s.kg)*parseInt(s.rp);repsPrev+=parseInt(s.rp);}
+        else if(s&&s.rp){repsPrev+=parseInt(s.rp);}
+      });
+    });
+  }
+  const fmt=v=>v===0?'0 kg':v>=1000?(v/1000).toFixed(1)+'t':v+'kg';
+  let best1RM=0, best1RMprev=0;
+  ['w'+week+'_s2_e0','w'+week+'_s2_e1'].forEach(k=>{
+    if(logs[k])logs[k].sets.forEach(s=>{
+      if(s&&s.kg&&s.rp){const e=parseFloat(s.kg)*(1+parseInt(s.rp)/30);if(e>best1RM)best1RM=e;}
+    });
+  });
+  if(prevWeek>0){
+    ['w'+prevWeek+'_s2_e0','w'+prevWeek+'_s2_e1'].forEach(k=>{
+      if(logs[k])logs[k].sets.forEach(s=>{
+        if(s&&s.kg&&s.rp){const e=parseFloat(s.kg)*(1+parseInt(s.rp)/30);if(e>best1RMprev)best1RMprev=e;}
+      });
+    });
+  }
+  const rm1Arrow=best1RM>0&&best1RMprev>0?(best1RM>best1RMprev?`<span style="color:var(--g)"> ▲</span>`:best1RM<best1RMprev?`<span style="color:#ef4444"> ▼</span>`:''):'';
+  const rm1Prev=best1RMprev>0?`<div style="font-size:10px;color:var(--g);margin-top:3px;font-weight:700">S${prevWeek} · ${Math.round(best1RMprev)}kg</div>`:'';
+  const rm1Display=best1RM>0?`<div style="margin-top:8px;background:var(--bg3);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:9px;color:#fff;letter-spacing:1px">1RM ESTIMÉ — SOULEVÉ DE TERRE</div><div style="font-size:9px;color:var(--dim);margin-top:2px">Formule Epley · indicatif</div>${rm1Prev}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--g)">${Math.round(best1RM)}<span style="font-size:14px">kg</span>${rm1Arrow}</div></div>`:'';
+  const arrow=(cur,prev)=>{
+    if(prev===0)return'';
+    if(cur>prev)return`<span style="color:var(--g);font-size:11px"> ▲</span>`;
+    if(cur<prev)return`<span style="color:#ef4444;font-size:11px"> ▼</span>`;
+    return`<span style="color:#fff;font-size:11px"> →</span>`;
+  };
+  c.innerHTML=`
+    <div style="font-family:'DM Mono',monospace;font-size:9px;color:#fff;letter-spacing:3px;margin-bottom:12px">STATS — SEMAINE ${week}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;margin-bottom:8px">
+      <div style="background:var(--bg3);border-radius:10px;padding:10px 6px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--g)">S${week}</div>
+        <div style="font-size:9px;color:#fff;letter-spacing:1px;margin-top:2px">EN COURS</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:10px;padding:10px 6px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--g)">${nbSess}<span style="font-size:14px;color:var(--g)">/6</span></div>
+        <div style="font-size:9px;color:#fff;letter-spacing:1px;margin-top:2px">SÉANCES</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center">
+      <div style="background:var(--bg3);border-radius:10px;padding:10px 6px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--g)">${fmt(volume)}${arrow(volume,volPrev)}</div>
+        <div style="font-size:9px;color:#fff;letter-spacing:1px;margin-top:2px">VOLUME SEM.</div>
+        ${prevWeek>0?`<div style="font-size:10px;color:var(--g);margin-top:4px;font-weight:700">S${prevWeek} · ${fmt(volPrev)}</div>`:''}
+      </div>
+      <div style="background:var(--bg3);border-radius:10px;padding:10px 6px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--g)">${totalReps}${arrow(totalReps,repsPrev)}</div>
+        <div style="font-size:9px;color:#fff;letter-spacing:1px;margin-top:2px">REPS SEM.</div>
+        ${prevWeek>0?`<div style="font-size:10px;color:var(--g);margin-top:4px;font-weight:700">S${prevWeek} · ${repsPrev}</div>`:''}
+      </div>
+    </div>
+    ${volume===0&&totalReps===0?'<div style="margin-top:10px;font-size:11px;color:#fff;text-align:center">Lance ta première séance pour suivre ta progression 💪</div>':''}
+    ${rm1Display}`;
+}
+
+
+function selCardio(idx,sec,e){
+  document.querySelectorAll('.copt').forEach((el,i)=>{
+    el.classList.toggle('selected',i===idx);
+  });
+}
+function saveNote(){
+  const note=document.getElementById('sessNote').value;
+  const k=`note_w${week}_s${window._currentSess?window._currentSess.id:'sat'}`;
+  localStorage.setItem(k,note);
+}
+function loadNote(sessId){
+  const k=`note_w${week}_s${sessId}`;
+  const n=document.getElementById('sessNote');
+  if(n)n.value=localStorage.getItem(k)||'';
+}
+function exportCSV(){
+  let csv='Semaine,Séance,Exercice,Série,KG,Reps\n';
+  Object.keys(logs).sort().forEach(key=>{
+    const parts=key.split('_');
+    const w=parts[0].replace('w','');
+    const s=parts[1].replace('s','');
+    const e=parts[2].replace('e','');
+    const sess=SESS.find(x=>x.id===parseInt(s));
+    const exo=sess?sess.exos[parseInt(e)]:{n:'?'};
+    logs[key].sets.forEach((set,i)=>{
+      if(set&&(set.kg||set.rp)){
+        csv+=`${w},${sess?sess.name:'?'},"${exo.n}",${i+1},${set.kg||''},${set.rp||''}\n`;
+      }
+    });
+  });
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`buard-elite-historique.csv`;
+  a.click();
+}
+function selSat(idx){
+  CARDIO_SAT.forEach((_,i)=>{
+    const el=document.getElementById('csat_'+i);
+    if(el)el.style.borderColor=i===idx?'var(--g)':'rgba(0,230,118,.2)';
+  });
+  // sauvegarde le choix
+  localStorage.setItem(`sat_w${week}`,idx);
+}
+function chrStop(){}
+function chrReset(){}
+
+function buildHist(){
+  const c=document.getElementById('histCnt');
+  if(!c)return;
+  const weeks=[...new Set(Object.keys(logs).map(k=>parseInt(k.split('_')[0].replace('w',''))))].sort((a,b)=>b-a);
+  if(!weeks.length){c.innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--dim);font-size:14px">Aucune donnée.<br>Lance ta première séance !</div>`;return;}
+  let h='';
+  weeks.forEach(w=>{
+    const wk=Object.keys(logs).filter(k=>k.startsWith('w'+w+'_'));
+    let inner='';
+    SESS.forEach(s=>{
+      const sk=wk.filter(k=>k.includes('_s'+s.id+'_'));if(!sk.length)return;
+    const note=localStorage.getItem(`note_w${w}_s${s.id}`)||'';
+      inner+=`<div style="margin-bottom:12px"><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--g);letter-spacing:2px;margin-bottom:6px">${s.name}${note?` <span style="color:#fff;font-weight:400;font-size:10px;letter-spacing:0">· ${note}</span>`:''}</div>`;
+      sk.forEach(k=>{
+        const ei=parseInt(k.split('_e')[1]);
+        const ex=s.exos[ei];if(!ex)return;
+        const sets=logs[k].sets.slice(0,ex.s).filter(s=>s&&(s.kg||s.rp));if(!sets.length)return;
+        inner+=`<div style="background:var(--bg3);border-radius:10px;padding:10px 12px;margin-bottom:5px"><div style="color:var(--dim);font-size:11px;margin-bottom:7px">${ex.n}</div><div style="display:flex;gap:5px;flex-wrap:wrap">`;
+        sets.forEach((s,i)=>inner+=`<span style="background:var(--bg);border:1px solid var(--g);border-radius:7px;padding:4px 9px;font-size:11px;font-family:'DM Mono',monospace;color:#fff">S${i+1}: ${s.kg||'?'}kg×${s.rp||'?'}</span>`);
+        inner+=`</div></div>`;
+      });
+      inner+='</div>';
+    });
+    if(!inner)return;
+    const bid='hb_'+w,cid='hc_'+w;
+    h+=`<div class="hw"><div class="hw-h" onclick="const b=document.getElementById('${bid}');b.classList.toggle('on');document.getElementById('${cid}').textContent=b.classList.contains('on')?'▲':'▼'"><div><div style="font-weight:700;font-size:16px;color:var(--txt)">Semaine ${w}</div><div style="font-size:11px;color:var(--dim)">${wk.length} série${wk.length>1?'s':''} enregistrée${wk.length>1?'s':''}</div></div><div style="display:flex;align-items:center;gap:8px"><button class="btn-danger" onclick="event.stopPropagation();delWk(${w})">🗑</button><span id="${cid}" style="color:var(--dim);font-size:13px">▼</span></div></div><div class="hw-bd" id="${bid}">${inner}</div></div>`;
+  });
+  c.innerHTML=h;
+}
+function clearAll(){
+  const btn=document.querySelector('.btn-danger[onclick="clearAll()"]');
+  if(btn.dataset.confirm==='1'){logs={};saveLogs();buildHist();buildStats();btn.dataset.confirm='';btn.textContent='🗑 Effacer';}
+  else{btn.dataset.confirm='1';btn.textContent='⚠️ Confirmer ?';setTimeout(()=>{btn.dataset.confirm='';btn.textContent='🗑 Effacer';},3000);}
+}
+function delWk(w){
+  Object.keys(logs).filter(k=>k.startsWith('w'+w+'_')).forEach(k=>delete logs[k]);
+  saveLogs();buildHist();buildStats();
+}
+function calcMacros(){
+  const w=parseFloat(document.getElementById('mwt').value);
+  const h=parseFloat(document.getElementById('mht').value);
+  const a=parseFloat(document.getElementById('mag').value);
+  const sex=document.getElementById('msex').value;
+  const act=parseFloat(document.getElementById('mact').value);
+  const g=document.getElementById('mgoal').value;
+  if(!w||!h||!a||w<30||w>250||h<100||h>250||a<10||a>100){document.getElementById('mres').style.display='none';return;}
+  const bmr=Math.round(10*w + 6.25*h - 5*a + (sex==='m'?5:-161));
+  const tdee=Math.round(bmr*act);
+  let kcalTarget, protM, lipM;
+  if(g==='muscle'){kcalTarget=tdee+300; protM=2.2; lipM=1.0;}
+  else if(g==='recomp'){kcalTarget=tdee-200; protM=2.4; lipM=0.9;}
+  else if(g==='cut'){kcalTarget=tdee-300; protM=2.4; lipM=0.85;}
+  else{kcalTarget=tdee; protM=2.0; lipM=0.9;}
+  const prot=Math.round(w*protM);
+  const lip=Math.round(w*lipM);
+  const gluc=Math.max(0,Math.round((kcalTarget-prot*4-lip*9)/4));
+  const kcalFinal=prot*4+gluc*4+lip*9;
+  document.getElementById('mkcal').textContent=kcalFinal;
+  document.getElementById('mprot').textContent=prot+'g';
+  document.getElementById('mgluc').textContent=gluc+'g';
+  document.getElementById('mlip').textContent=lip+'g';
+  document.getElementById('mbase').textContent=`MB: ${bmr} kcal · TDEE: ${tdee} kcal`;
+  document.getElementById('mres').style.display='block';
+  const tips={muscle:`Surplus de +300 kcal. Protéines à ${prot}g (2.2g/kg) pour maximiser la synthèse musculaire. Glucides prioritaires pour l'énergie et le glycogène.`,recomp:`Déficit léger −200 kcal. Protéines très hautes (${prot}g) pour préserver le muscle tout en perdant du gras simultanément.`,cut:`Déficit modéré −300 kcal. Protéines élevées (${prot}g) pour protéger le muscle. Perte de gras progressive et durable sans sacrifier le muscle.`,maintain:`Maintenance à ${tdee} kcal. Équilibre optimal pour la performance et la récupération sur 5 séances/semaine.`};
+  document.getElementById('mtip').innerHTML='💡 '+tips[g];
+}
+function buildAdvice(){
+  const c=document.getElementById('adviceCnt');if(!c)return;
+  const conseils=[
+    {ico:"🥩",titre:"Protéines — la règle des 2g/kg",txt:"C'est le pilier. Mange au moins 2g de protéines par kg de poids corporel chaque jour, répartis sur tous tes repas. Sources : poulet, dinde, œufs, fromage blanc, thon, steak haché 5%. Sans ça, tu ne construis pas de muscle peu importe l'entraînement."},
+    {ico:"🍚",titre:"Glucides — carburant de l'effort",txt:"Mange tes glucides principalement avant la séance (riz, patate douce, flocons d'avoine) pour remplir tes réserves d'énergie. Après la séance, quelques glucides aident à récupérer. La nuit, réduis les glucides."},
+    {ico:"🥑",titre:"Lipides — indispensables aux hormones",txt:"Ne supprime jamais les graisses. Elles fabriquent la testostérone, essentielle pour construire du muscle. Vise 0.9g/kg par jour. Sources saines : huile d'olive, avocat, œufs, amandes, saumon."},
+    {ico:"💧",titre:"Eau — minimum 2.5L par jour",txt:"La déshydratation réduit la force de 10-20%. Bois 500ml dès le réveil, puis régulièrement toute la journée. Avant et pendant la séance, bois toutes les 20 minutes."},
+    {ico:"😴",titre:"Sommeil — c'est là que le muscle pousse",txt:"Le muscle se construit pendant le sommeil, pas en salle. Vise 7-9h par nuit. La croissance hormonale (GH) est maximale entre 23h et 1h du matin — couche-toi avant minuit. Dors dans le noir total pour maximiser la mélatonine."},
+    {ico:"🧊",titre:"Douche froide après séance",txt:"Scientifiquement prouvé : la douche froide (15-20°C) après l'effort réduit l'inflammation, accélère la récupération musculaire et booste le système nerveux. 2-3 minutes suffisent. Tu peux finir ta douche chaude par 30 secondes de froid."},
+    {ico:"🔄",titre:"Recomposition — perdre du gras ET du muscle",txt:"Pour perdre du gras sans perdre de muscle : déficit calorique léger (−200 à −300 kcal), protéines très élevées (2.4g/kg), et continue de t'entraîner lourd. Le muscle se maintient si tu gardes la stimulation et les protéines. C'est lent mais ça dure."},
+    {ico:"📅",titre:"Régularité — la clé absolue",txt:"Une semaine parfaite ne fait rien. 6 mois réguliers changent un physique. Mieux vaut 80% constant que 100% par épisodes. Mange bien 90% du temps, tu peux te permettre des écarts le week-end sans impact notable."},
+    {ico:"💊",titre:"Compléments — ce qui est prouvé scientifiquement",txt:"3 compléments ont des preuves solides :\n\n• Whey protéine : 30g après la séance dans les 30 min. Permet d'atteindre facilement tes 2g/kg de protéines. Pas magique — c'est juste des protéines en poudre.\n\n• Créatine monohydrate : 5g par jour, tous les jours (même sans séance). Augmente la force et la récupération de 5-15%. C'est le complément le plus étudié et le plus efficace. Sans danger.\n\n• Oméga 3 : 2-3g par jour au repas. Réduit l'inflammation, améliore la récupération et la santé cardiovasculaire.\n\nTout le reste (brûleurs de graisse, boosters, BCAA si tu manges assez de protéines) est superflu."},
+  ];
+  conseils.forEach((a,i)=>{
+    const div=document.createElement('div');
+    const bid='adv_'+i, cid='advc_'+i;
+    div.style.cssText='background:var(--bg2);border:1px solid var(--g);border-radius:var(--r);margin:6px 16px 0;overflow:hidden';
+    div.innerHTML=`<div style="padding:13px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="acTog('${bid}','${cid}')">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">${a.ico}</span>
+        <div style="font-weight:700;font-size:14px;color:#fff">${a.titre}</div>
+      </div>
+      <span id="${cid}" style="color:var(--g);font-size:16px;flex-shrink:0">▼</span>
+    </div>
+    <div class="ac-bd" id="${bid}" style="font-size:13px;color:#fff;line-height:1.8">${a.txt}</div>`;
+    c.appendChild(div);
+  });
+}
+function buildGloss(){
+  const c=document.getElementById('glossCnt');
+  GLOSS.forEach((g,i)=>{
+    const div=document.createElement('div');div.className='gl';
+    const bid='gb_'+i,cid='gc_'+i;
+    const lines=g.def.split('\n').map(l=>{
+      if(!l)return'<div style="height:5px"></div>';
+      const isBullet=l.startsWith('•')||l.startsWith('→');
+      const isH=l.endsWith(':')&&l.length>3&&!l.startsWith('•');
+      return `<div class="gl-line${isBullet?' b':''}${isH?' h':''}">${l}</div>`;
+    }).join('');
+    div.innerHTML=`<div class="gl-h" onclick="const b=document.getElementById('${bid}');b.classList.toggle('on');document.getElementById('${cid}').textContent=b.classList.contains('on')?'▲':'▼'"><div class="gl-ico">${g.ico}</div><div style="flex:1"><div class="gl-term">${g.term}</div><div class="gl-sub">${g.sub}</div></div><span id="${cid}" style="color:var(--dim);font-size:13px;flex-shrink:0">▼</span></div><div class="gl-bd" id="${bid}">${lines}</div>`;
+    c.appendChild(div);
+  });
+}
+
+document.getElementById('wkLbl').textContent='S'+week;
+buildDates();buildHomeList();buildAdvice();buildGloss();buildStats();
+</script>
+</body>
+</html>
